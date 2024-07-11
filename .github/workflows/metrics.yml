@@ -2,17 +2,14 @@ name: Metrics and Release
 
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
     types: [closed]
 
-
 jobs:
     release:
+        if: github.event.pull_request.merged == true
         runs-on: "ubuntu-latest"
 
         steps:
