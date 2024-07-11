@@ -25,7 +25,7 @@ jobs:
 
             - name: Gera release e envia métricas para repositório de DOC
               run: |
-                  cd scripts && yarn install && node release.js
+                  cd scripts && npm install && node release.js
                   git config --global user.email "${{secrets.GIT_USER_EMAIL}}"
                   git config --global user.name "${{secrets.GIT_USER_NAME}}"
                   git clone --single-branch --branch main "https://x-access-token:${{secrets.API_TOKEN_GITHUB}}@github.com/fga-eps-mds/${{secrets.GIT_DOC_REPO}}" ${{secrets.GIT_DOC_REPO}}
