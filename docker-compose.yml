@@ -1,0 +1,33 @@
+services:
+  # gateway-api:
+  #   container_name: gateway-api
+  #   restart: on-failure
+  #   build: .
+  #   ports:
+  #     - "8080:8080"
+  #   volumes:
+  #     - .:/src
+  #   env_file:
+  #     - .env
+  #   networks:
+  #     - calculus-network
+  #   depends_on:
+  #     - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    hostname: rabbitmq
+    volumes:
+      - /var/lib/rabbitmq
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    env_file:
+      - .env
+    networks:
+      - calculus-network
+
+networks:
+  calculus-network:
+    external: true
