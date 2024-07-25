@@ -1,5 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, Logger } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, Logger, Query } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ClientProxy, ClientProxyFactory, Transport } from '@nestjs/microservices';
 
@@ -23,7 +22,13 @@ export class UsersController {
 
   @Post()
   @UsePipes(ValidationPipe)
-  async createUser(@Body() createUserDto: CreateUserDto) {
+  createUser(@Body() createUserDto: CreateUserDto) {
     return this.userProxy.send('user-created', createUserDto)
   }
+
+  @Get("verify")
+  verifyUser(@Query("token" ) token: string) {
+    return this.userProxy.send('verify-user', token)
+  }
+
 }

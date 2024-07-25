@@ -1,18 +1,18 @@
 services:
-  # gateway-api:
-  #   container_name: gateway-api
-  #   restart: on-failure
-  #   build: .
-  #   ports:
-  #     - "8080:8080"
-  #   volumes:
-  #     - .:/src
-  #   env_file:
-  #     - .env
-  #   networks:
-  #     - calculus-network
-  #   depends_on:
-  #     - rabbitmq
+  gateway-api:
+    container_name: gateway-api
+    restart: on-failure
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/src
+    env_file:
+      - .env
+    networks:
+      - calculus-network
+    depends_on:
+      - rabbitmq
 
   rabbitmq:
     image: rabbitmq:3-management
