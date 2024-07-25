@@ -1,10 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { AllExceptionsFilter } from './common/filters/http-exception.filter';
+import { RpcExceptionsFilter } from './common/filters/http-exception.filter';
+import { TimeoutInterceptor } from './common/interceptors/timeout.interceptor';
+import { ConfigService } from '@nestjs/config';
+// import { ResponseInterceptor } from './common/interceptors/response.interceptor';
+
+const configService = new ConfigService();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalFilters(new AllExceptionsFilter());
-  await app.listen(8080);
+  app.useGlobalInterceptors(new TimeoutInterceptor());
+  app.useGlobalFilters(new RpcExceptionsFilter());
+  await app.listen(configService.get<string>('PORT') || 8080);
 }
 bootstrap();

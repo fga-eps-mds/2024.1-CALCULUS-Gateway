@@ -1,32 +1,41 @@
-import { Catch, ExceptionFilter, ArgumentsHost, HttpException, HttpStatus, Logger } from "@nestjs/common";
+import {
+  Catch,
+  ExceptionFilter,
+  ArgumentsHost,
+  HttpException,
+  HttpStatus,
+  Logger,
+} from '@nestjs/common';
+import { RpcException } from '@nestjs/microservices';
 
 @Catch()
-export class AllExceptionsFilter implements ExceptionFilter {
+export class RpcExceptionsFilter implements ExceptionFilter {
+  private readonly logger = new Logger(RpcExceptionsFilter.name);
 
-    private readonly logger = new Logger(AllExceptionsFilter.name)
+  catch(exception: RpcException, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse();
+    const request = ctx.getRequest();
+    try {
+      const excep: any = exception;
+      console.log(`exception: ${JSON.stringify(exception)}`);
 
-    catch(exception: unknown, host: ArgumentsHost){
+      this.logger.error(
+        `Http Status: ${excep.statusCode} Error Message: ${JSON.stringify(excep.message)} `,
+      );
 
-        const ctx = host.switchToHttp();
-        const response = ctx.getResponse();
-        const request = ctx.getRequest();
-
-        console.log(`exception: ${JSON.stringify(exception)}`)
-
-        const status =
-        exception instanceof HttpException
-        ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR;
-
-        const message =
-            exception instanceof HttpException ? exception.getResponse(): exception;
-
-        this.logger.error(`Http Status: ${status} Error Message: ${JSON.stringify(message)} `)
-
-        response.status(status).json({
-            timestamp: new Date().toISOString(),
-            path: request.url,
-            error: message
-        })
+      response.status(excep.statusCode).json({
+        timestamp: new Date().toISOString(),
+        path: request.url,
+        error: excep.message,
+      });
+    } catch (e) {
+      this.logger.error(`Exception: ${JSON.stringify(e)}`);
+      response.status(500).json({
+        timestamp: new Date().toISOString(),
+        path: request.url,
+        error: 'Internal Server Error',
+      });
     }
+  }
 }
