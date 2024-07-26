@@ -30,4 +30,7 @@ services:
 
 networks:
   calculus-network:
-    external: true
+    name: calculus-network
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.enable_icc: "true"
